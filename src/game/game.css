@@ -1,0 +1,2184 @@
+/* ==========================================================================
+   CATCH & LEARN — gaya visual 3D kartun
+   Pentas 16:9 menggunakan unit cqw/cqh supaya semua elemen berskala sekata.
+   ========================================================================== */
+
+:root {
+  --cl-font-tajuk: 'Lilita One', 'Baloo 2', system-ui, sans-serif;
+  --cl-font: 'Baloo 2', system-ui, sans-serif;
+  --cl-gelap: #1b1b2f;
+  --cl-biru-tua: #0b3b5c;
+}
+
+.cl-viewport {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, #1a7fb8 0%, #0b3b5c 60%, #06223a 100%);
+}
+
+.cl-stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100vw * 9 / 16));
+  container-type: size;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--cl-gelap);
+  box-shadow: 0 0 6vmin rgba(0, 0, 0, 0.5);
+}
+.cl-stage > * {
+  font-family: var(--cl-font);
+  font-size: 1.5cqw;
+}
+
+.cl-putar {
+  display: none;
+}
+@media (orientation: portrait) and (max-width: 820px) {
+  .cl-putar {
+    display: flex;
+    position: fixed;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 86vw;
+    gap: 3vw;
+    align-items: center;
+    padding: 3vw 4vw;
+    border-radius: 4vw;
+    background: #fff;
+    color: var(--cl-gelap);
+    font-family: var(--cl-font);
+    font-weight: 700;
+    font-size: 3.6vw;
+    box-shadow: 0 1vw 0 #ffb703;
+  }
+  .cl-putar span {
+    font-size: 7vw;
+    animation: cl-goyang 1.6s ease-in-out infinite;
+  }
+}
+
+.cl-screen {
+  position: absolute;
+  inset: 0;
+  animation: cl-masuk 0.5s ease-out;
+}
+
+/* ---------------- Latar belakang ---------------- */
+.cl-bg,
+.cl-bg__img,
+.cl-bg__gelap {
+  position: absolute;
+  inset: 0;
+}
+.cl-bg {
+  overflow: hidden;
+}
+.cl-bg__img {
+  background-size: cover;
+  background-position: center;
+  animation: cl-zoom 30s ease-in-out infinite alternate;
+}
+.cl-bg__gelap {
+  background: linear-gradient(180deg, rgba(6, 34, 58, 0.55), rgba(6, 34, 58, 0.85));
+}
+.cl-bg__kilau {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 58%;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    100deg,
+    transparent 0 3cqw,
+    rgba(255, 255, 255, 0.11) 3cqw 3.6cqw,
+    transparent 3.6cqw 7cqw
+  );
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 80%, transparent);
+  animation: cl-ombak 9s linear infinite;
+  mix-blend-mode: soft-light;
+}
+.cl-bg__kilau--2 {
+  animation-duration: 14s;
+  animation-direction: reverse;
+  opacity: 0.7;
+  transform: scaleY(-1);
+}
+.cl-bg__sparkles i {
+  position: absolute;
+  width: 0.7cqw;
+  height: 0.7cqw;
+  background: #fff;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: cl-kelip 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+.cl-bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cl-bubbles i {
+  position: absolute;
+  bottom: -3cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15) 60%);
+  border: 0.12cqw solid rgba(255, 255, 255, 0.6);
+  animation: cl-gelembung linear infinite;
+}
+
+/* ---------------- Tajuk 3D ---------------- */
+.cl-title3d {
+  margin: 0;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-align: center;
+  filter: drop-shadow(0 1.2cqw 1.2cqw rgba(0, 0, 0, 0.35));
+}
+.cl-title3d--besar {
+  font-size: 10cqw;
+}
+.cl-title3d--sederhana {
+  font-size: 5.4cqw;
+}
+.cl-title3d--kecil {
+  font-size: 3.4cqw;
+}
+.cl-title3d__huruf {
+  --c1: #fff6c2;
+  --c2: #ffd84d;
+  --c3: #ff9f1c;
+  --e: #b34700;
+  position: relative;
+  display: inline-block;
+  color: var(--c2);
+  -webkit-text-stroke: 0.09em var(--cl-gelap);
+  paint-order: stroke fill;
+  text-shadow:
+    0 0.025em 0 var(--e),
+    0 0.05em 0 var(--e),
+    0 0.075em 0 var(--e),
+    0 0.1em 0 var(--cl-gelap),
+    0 0.12em 0 var(--cl-gelap);
+  animation: cl-huruf 2.6s ease-in-out infinite;
+}
+.cl-title3d__huruf::after {
+  content: attr(data-h);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--c1) 8%, var(--c2) 48%, var(--c3) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+.cl-title3d__huruf::before {
+  content: '';
+  position: absolute;
+  left: 18%;
+  top: 14%;
+  width: 22%;
+  height: 12%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 2;
+  transform: rotate(-20deg);
+}
+.cl-title3d__huruf[data-h=' ']::before {
+  display: none;
+}
+.cl-title3d__huruf:nth-child(5n + 2) {
+  --c1: #d8f3ff;
+  --c2: #4cc9ff;
+  --c3: #1677ff;
+  --e: #0b3fa0;
+}
+.cl-title3d__huruf:nth-child(5n + 3) {
+  --c1: #e3ffd6;
+  --c2: #6ee35a;
+  --c3: #1fa33a;
+  --e: #0f6b23;
+}
+.cl-title3d__huruf:nth-child(5n + 4) {
+  --c1: #ffe0ef;
+  --c2: #ff6fb1;
+  --c3: #e6206e;
+  --e: #9a0f47;
+}
+.cl-title3d__huruf:nth-child(5n + 5) {
+  --c1: #f1e2ff;
+  --c2: #b98bff;
+  --c3: #7b3fe4;
+  --e: #4c1d9e;
+}
+
+.cl-subtajuk {
+  display: inline-block;
+  margin: 1.6cqw 0 0;
+  padding: 0.4cqw 2.6cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2.7cqw;
+  letter-spacing: 0.08em;
+  color: #fff;
+  -webkit-text-stroke: 0.3cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  background: linear-gradient(180deg, #3fb4ff, #136bd6);
+  border: 0.35cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow:
+    0 0.5cqw 0 var(--cl-gelap),
+    inset 0 0.4cqw 0 rgba(255, 255, 255, 0.45);
+  transform: rotate(-1.5deg);
+  animation: cl-denyut 2.8s ease-in-out infinite;
+}
+
+/* ---------------- Butang ---------------- */
+.cl-btn {
+  --b1: #ffb347;
+  --b2: #ff7b00;
+  --bg: #b34700;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8cqw;
+  padding: 0.9cqw 2.6cqw 1cqw;
+  min-width: 20cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2cqw;
+  letter-spacing: 0.05em;
+  color: #fff;
+  -webkit-text-stroke: 0.22cqw rgba(27, 27, 47, 0.85);
+  paint-order: stroke fill;
+  background: linear-gradient(180deg, var(--b1), var(--b2));
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 1.6cqw;
+  box-shadow:
+    0 0.6cqw 0 var(--bg),
+    0 0.6cqw 0 0.3cqw var(--cl-gelap),
+    0 1.4cqw 1.4cqw rgba(0, 0, 0, 0.3),
+    inset 0 0.45cqw 0 rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition:
+    transform 0.12s,
+    box-shadow 0.12s,
+    filter 0.12s;
+}
+.cl-btn::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 30%;
+  top: 0.4cqw;
+  height: 28%;
+  border-radius: 99cqw;
+  background: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+.cl-btn:hover {
+  transform: translateY(-0.3cqw) scale(1.03);
+  filter: brightness(1.08);
+}
+.cl-btn:active {
+  transform: translateY(0.5cqw);
+  box-shadow:
+    0 0.1cqw 0 var(--bg),
+    0 0.1cqw 0 0.3cqw var(--cl-gelap),
+    inset 0 0.45cqw 0 rgba(255, 255, 255, 0.5);
+}
+.cl-btn:focus-visible {
+  outline: 0.4cqw solid #fff;
+  outline-offset: 0.5cqw;
+}
+.cl-btn__ikon {
+  font-size: 1.1em;
+  -webkit-text-stroke: 0;
+  filter: drop-shadow(0 0.15cqw 0 rgba(0, 0, 0, 0.3));
+}
+.cl-btn--kecil {
+  min-width: 0;
+  padding: 0.5cqw 1.4cqw 0.6cqw;
+  font-size: 1.3cqw;
+  border-radius: 1.1cqw;
+}
+.cl-btn--hijau {
+  --b1: #7cf06b;
+  --b2: #22b33a;
+  --bg: #11722a;
+}
+.cl-btn--biru {
+  --b1: #5cc8ff;
+  --b2: #1677ff;
+  --bg: #0b3fa0;
+}
+.cl-btn--ungu {
+  --b1: #cf9bff;
+  --b2: #8a3ffc;
+  --bg: #4c1d9e;
+}
+.cl-btn--merah {
+  --b1: #ff8a9b;
+  --b2: #ff2d55;
+  --bg: #9a0f30;
+}
+.cl-btn--kuning {
+  --b1: #fff07a;
+  --b2: #ffc300;
+  --bg: #b37b00;
+}
+
+.cl-muzik-toggle {
+  position: absolute;
+  z-index: 70;
+  top: 1.4cqw;
+  right: 1.4cqw;
+  display: flex;
+  align-items: center;
+  gap: 0.6cqw;
+  padding: 0.4cqw 1.2cqw 0.4cqw 0.5cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.25cqw;
+  letter-spacing: 0.04em;
+  color: var(--cl-gelap);
+  background: #fff;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow: 0 0.4cqw 0 var(--cl-gelap);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.cl-muzik-toggle:hover {
+  transform: scale(1.05);
+}
+.cl-muzik-toggle:active {
+  transform: translateY(0.3cqw);
+  box-shadow: 0 0.1cqw 0 var(--cl-gelap);
+}
+.cl-muzik-toggle__ikon {
+  display: grid;
+  place-items: center;
+  width: 2.4cqw;
+  height: 2.4cqw;
+  border-radius: 50%;
+  background: #22b33a;
+  font-size: 1.3cqw;
+}
+.cl-muzik-toggle.is-on .cl-muzik-toggle__ikon {
+  animation: cl-goyang 1s ease-in-out infinite;
+}
+.cl-muzik-toggle.is-off .cl-muzik-toggle__ikon {
+  background: #ff2d55;
+}
+
+.cl-back {
+  position: absolute !important;
+  z-index: 20;
+  top: 1.4cqw;
+  left: 1.4cqw;
+}
+
+/* ---------------- Panel ---------------- */
+.cl-panel {
+  position: relative;
+  padding: 2.4cqw;
+  background: linear-gradient(180deg, #fffdf4, #fff1c9);
+  border: 0.35cqw solid var(--cl-gelap);
+  border-radius: 2.4cqw;
+  box-shadow:
+    0 0.8cqw 0 #d9a441,
+    0 0.8cqw 0 0.35cqw var(--cl-gelap),
+    0 2cqw 3cqw rgba(0, 0, 0, 0.35),
+    inset 0 0 0 0.5cqw rgba(255, 255, 255, 0.7);
+}
+.cl-panel__reben {
+  position: absolute;
+  top: -1.8cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.4cqw 3cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.6cqw;
+  color: #fff;
+  background: #ff2d55;
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 1cqw;
+}
+
+.cl-halaman {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2cqw;
+  padding: 2cqw 4cqw 3cqw;
+}
+
+/* ---------------- Muka depan ---------------- */
+.cl-menu__isi {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4.5cqh;
+  text-align: center;
+}
+.cl-menu__logo {
+  position: relative;
+  animation: cl-terapung 4s ease-in-out infinite;
+}
+.cl-menu__lencana {
+  position: absolute;
+  top: -1.5cqw;
+  right: -4.5cqw;
+  font-size: 5cqw;
+  transform: rotate(18deg);
+  filter: drop-shadow(0 0.4cqw 0 rgba(0, 0, 0, 0.3));
+  animation: cl-goyang 2.4s ease-in-out infinite;
+}
+.cl-reben-tugasan {
+  position: relative;
+  margin-top: 2cqw;
+  padding: 0.7cqw 4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.55cqw;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: linear-gradient(180deg, #ff5c7a, #e6204a);
+  border: 0.3cqw solid var(--cl-gelap);
+  box-shadow: 0 0.45cqw 0 #8a0f2a;
+  clip-path: polygon(0 0, 100% 0, 97% 50%, 100% 100%, 0 100%, 3% 50%);
+  text-shadow: 0 0.15cqw 0 rgba(0, 0, 0, 0.35);
+}
+.cl-tekan-mula {
+  margin-top: 6cqh;
+  padding: 1.1cqw 4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2.6cqw;
+  letter-spacing: 0.06em;
+  color: #fff;
+  -webkit-text-stroke: 0.25cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  background: linear-gradient(180deg, #7cf06b, #22b33a);
+  border: 0.35cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow:
+    0 0.6cqw 0 #11722a,
+    0 0.6cqw 0 0.35cqw var(--cl-gelap),
+    0 0 0 0 rgba(124, 240, 107, 0.6);
+  cursor: pointer;
+  animation: cl-nadi 1.4s ease-in-out infinite;
+}
+.cl-menu__bawah {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  margin-top: 3.2cqh;
+  animation: cl-naik 0.6s ease-out both;
+}
+.cl-menu__butang {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5cqw;
+}
+.cl-menu__butang .cl-btn {
+  min-width: 26cqw;
+  font-size: 2.1cqw;
+}
+.cl-kad-pelajar {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  padding: 1.6cqw 2cqw;
+  max-width: 34cqw;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.92);
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 1.8cqw;
+  box-shadow:
+    0 0.6cqw 0 #1677ff,
+    0 0.6cqw 0 0.3cqw var(--cl-gelap),
+    0 1.6cqw 2cqw rgba(0, 0, 0, 0.3);
+  transform: rotate(-1.5deg);
+}
+.cl-kad-pelajar__ikon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 5.2cqw;
+  height: 5.2cqw;
+  font-size: 3cqw;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffe066, #ffb703);
+  border: 0.3cqw solid var(--cl-gelap);
+}
+.cl-kad-pelajar dl {
+  margin: 0;
+  display: grid;
+  gap: 0.6cqw;
+}
+.cl-kad-pelajar dt {
+  font-size: 1.05cqw;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1677ff;
+}
+.cl-kad-pelajar dd {
+  margin: 0;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.55cqw;
+  line-height: 1.15;
+}
+
+.cl-menu__lompat {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cl-lompat {
+  position: absolute;
+  width: 7cqw;
+  animation: cl-lompat 4.5s ease-in-out infinite;
+  opacity: 0;
+}
+.cl-lompat--1 {
+  left: 8%;
+  top: 76%;
+  animation-delay: 0.5s;
+}
+.cl-lompat--2 {
+  left: 82%;
+  top: 80%;
+  animation-delay: 2s;
+  --arah: -1;
+}
+.cl-lompat--3 {
+  left: 62%;
+  top: 88%;
+  animation-delay: 3.4s;
+}
+.cl-lompat__ikan {
+  width: 100%;
+  transform: scaleX(var(--arah, 1));
+}
+
+/* ---------------- Cara bermain ---------------- */
+.cl-cara__panel {
+  width: 86cqw;
+  padding: 2cqw;
+}
+.cl-langkah {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.4cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cl-langkah__item {
+  position: relative;
+  padding: 2cqw 1.4cqw 1.4cqw;
+  text-align: center;
+  background: #fff;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 1.6cqw;
+  box-shadow: 0 0.45cqw 0 #8ecae6;
+  animation: cl-naik 0.5s ease-out both;
+}
+.cl-langkah__no {
+  position: absolute;
+  top: -1.4cqw;
+  left: -1cqw;
+  display: grid;
+  place-items: center;
+  width: 3cqw;
+  height: 3cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.7cqw;
+  color: #fff;
+  background: #ff7b00;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 50%;
+}
+.cl-langkah__ikon {
+  font-size: 3.4cqw;
+  line-height: 1;
+}
+.cl-langkah__item h3 {
+  margin: 0.8cqw 0 0.4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.6cqw;
+  font-weight: 400;
+  color: #1677ff;
+}
+.cl-langkah__item p {
+  margin: 0;
+  font-size: 1.2cqw;
+  line-height: 1.35;
+}
+.cl-cara__misi {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqw;
+  margin-top: 1.6cqw;
+  padding: 1.2cqw 1.6cqw;
+  background: #e7f7ff;
+  border: 0.22cqw dashed #1677ff;
+  border-radius: 1.4cqw;
+}
+.cl-cara__misi-teks {
+  flex: 1;
+  font-size: 1.3cqw;
+  line-height: 1.35;
+}
+.cl-cara__ikan {
+  display: flex;
+  gap: 0.6cqw;
+}
+.cl-cara__ikan-item {
+  width: 8.4cqw;
+  animation: cl-terapung 3s ease-in-out infinite;
+}
+.cl-cara__ikan-item:nth-child(2n) {
+  animation-delay: -1.5s;
+}
+
+/* ---------------- Tetapan ---------------- */
+.cl-tetapan__panel {
+  width: 62cqw;
+  display: grid;
+  gap: 1.1cqw;
+}
+.cl-tetapan__baris {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+.cl-tetapan__label {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+}
+.cl-tetapan__label h3 {
+  margin: 0;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 1.9cqw;
+}
+.cl-tetapan__label p {
+  margin: 0;
+  font-size: 1.2cqw;
+  opacity: 0.75;
+}
+.cl-tetapan__ikon {
+  display: grid;
+  place-items: center;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  font-size: 2.4cqw;
+  background: #fff;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 1.2cqw;
+  box-shadow: 0 0.35cqw 0 #8ecae6;
+}
+.cl-tetapan__slider {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 0 0 1.1cqw 5.6cqw;
+  border-bottom: 0.2cqw dashed rgba(27, 27, 47, 0.2);
+  font-size: 1.5cqw;
+}
+.cl-tetapan__slider b {
+  min-width: 4.4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  text-align: right;
+}
+.cl-tetapan__slider input {
+  flex: 1;
+  accent-color: #ff7b00;
+  height: 1.2cqw;
+  cursor: pointer;
+}
+.cl-tetapan__slider input:disabled {
+  opacity: 0.4;
+}
+.cl-tetapan__uji {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8cqw;
+  font-weight: 700;
+  font-size: 1.3cqw;
+}
+.cl-suis {
+  position: relative;
+  flex: none;
+  width: 9cqw;
+  height: 3.8cqw;
+  padding: 0;
+  background: #ff5c7a;
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow:
+    inset 0 0.4cqw 0 rgba(0, 0, 0, 0.18),
+    0 0.35cqw 0 var(--cl-gelap);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cl-suis.is-on {
+  background: #22b33a;
+}
+.cl-suis__teks {
+  position: absolute;
+  top: 50%;
+  right: 1.2cqw;
+  transform: translateY(-50%);
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.5cqw;
+  color: #fff;
+}
+.cl-suis.is-on .cl-suis__teks {
+  right: auto;
+  left: 1.2cqw;
+}
+.cl-suis__tombol {
+  position: absolute;
+  top: 0.25cqw;
+  left: 0.3cqw;
+  width: 2.8cqw;
+  height: 2.8cqw;
+  background: linear-gradient(180deg, #fff, #dfe7ee);
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 50%;
+  transition: left 0.22s cubic-bezier(0.5, 1.8, 0.5, 1);
+}
+.cl-suis.is-on .cl-suis__tombol {
+  left: calc(100% - 3.4cqw);
+}
+
+/* ---------------- Permainan ---------------- */
+.cl-main__tasik {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: manipulation;
+}
+.cl-main__joran {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  filter: drop-shadow(0 0.4cqw 0.3cqw rgba(0, 0, 0, 0.35));
+  z-index: 4;
+}
+.cl-ikan {
+  --dir: 1;
+  --rot: 0deg;
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--dir));
+  pointer-events: none;
+}
+.cl-ikan svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cl-ikan.is-istimewa .cl-ikan__svg {
+  opacity: 0.88;
+  filter: drop-shadow(0 0 0.6cqw rgba(255, 255, 180, 0.95)) saturate(0.9) brightness(0.95);
+}
+.cl-ikan__aura {
+  position: absolute;
+  inset: -20% -10%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 200, 0.55), transparent);
+  animation: cl-aura 1.8s ease-in-out infinite;
+}
+.cl-ikan__tanya {
+  position: absolute;
+  left: 50%;
+  top: -2.6cqw;
+  display: grid;
+  place-items: center;
+  width: 2.4cqw;
+  height: 2.4cqw;
+  margin-left: -1.2cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.7cqw;
+  color: var(--cl-gelap);
+  background: #ffe066;
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 50%;
+  transform: scaleX(var(--dir));
+  animation: cl-lantun 1.2s ease-in-out infinite;
+}
+.cl-ikan[data-keadaan='tertarik'] .cl-ikan__tanya,
+.cl-ikan[data-keadaan='gigit'] .cl-ikan__tanya {
+  background: #ff7b00;
+  color: #fff;
+}
+.cl-ikan[data-keadaan='naik'] {
+  z-index: 6;
+}
+.cl-ikan[data-keadaan='naik'] .cl-ikan__svg {
+  opacity: 1;
+  filter: drop-shadow(0 0.6cqw 0.4cqw rgba(0, 0, 0, 0.35));
+}
+.cl-ikan[data-keadaan='naik'] .cl-ikan__tanya,
+.cl-ikan[data-keadaan='naik'] .cl-ikan__aura {
+  display: none;
+}
+.cl-ikan.is-biasa {
+  opacity: 0.32;
+  filter: blur(0.08cqw);
+}
+.cl-ikan .ikan-ekor {
+  animation: cl-ekor 0.5s ease-in-out infinite alternate;
+}
+.cl-ikan[data-keadaan='lari'] .ikan-ekor,
+.cl-ikan[data-keadaan='gigit'] .ikan-ekor,
+.cl-ikan[data-keadaan='naik'] .ikan-ekor {
+  animation-duration: 0.12s;
+}
+
+.cl-pelampung {
+  position: absolute;
+  z-index: 5;
+  width: 1.5cqw;
+  height: 2.2cqw;
+  transform: translate(-50%, -80%);
+  pointer-events: none;
+}
+.cl-pelampung__atas,
+.cl-pelampung__bawah {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 55%;
+  border: 0.18cqw solid var(--cl-gelap);
+}
+.cl-pelampung__atas {
+  top: 0;
+  background: radial-gradient(circle at 35% 30%, #ff9aa8, #ff2d55 60%);
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+}
+.cl-pelampung__bawah {
+  bottom: 0;
+  background: radial-gradient(circle at 35% 30%, #fff, #dfe7ee);
+  border-radius: 0 0 50% 50% / 0 0 70% 70%;
+}
+.cl-pelampung__riak {
+  position: absolute;
+  left: 50%;
+  top: 80%;
+  width: 4cqw;
+  height: 1.2cqw;
+  border: 0.18cqw solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.cl-pelampung[data-fasa='menunggu'] .cl-pelampung__riak,
+.cl-pelampung[data-fasa='umpan'] .cl-pelampung__riak {
+  animation: cl-riak 1.6s ease-out infinite;
+}
+.cl-pelampung[data-fasa='umpan'] .cl-pelampung__riak {
+  animation-duration: 0.5s;
+}
+.cl-pelampung__seru {
+  position: absolute;
+  left: 50%;
+  bottom: 120%;
+  display: grid;
+  place-items: center;
+  width: 3.2cqw;
+  height: 3.2cqw;
+  margin-left: -1.6cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2.4cqw;
+  color: #fff;
+  background: #ff2d55;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 50%;
+  animation: cl-seru 0.35s ease-in-out infinite alternate;
+}
+
+.cl-percikan {
+  position: absolute;
+  z-index: 5;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.cl-percikan i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5cqw;
+  height: 1.6cqw;
+  border: 0.25cqw solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: cl-gelang 0.9s ease-out forwards;
+}
+.cl-percikan i:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.cl-percikan i:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.cl-percikan b {
+  position: absolute;
+  left: -0.4cqw;
+  top: -0.4cqw;
+  width: 0.8cqw;
+  height: 1cqw;
+  background: #fff;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow: 0 0 0 0.12cqw #8ecae6;
+  animation: cl-titis 0.7s ease-out forwards;
+}
+.cl-percikan b:nth-of-type(1) {
+  --tx: -2.6cqw;
+}
+.cl-percikan b:nth-of-type(2) {
+  --tx: -0.8cqw;
+}
+.cl-percikan b:nth-of-type(3) {
+  --tx: 0.9cqw;
+}
+.cl-percikan b:nth-of-type(4) {
+  --tx: 2.6cqw;
+}
+.cl-percikan.is-besar i {
+  width: 9cqw;
+  height: 2.6cqw;
+}
+.cl-percikan.is-besar b {
+  width: 1.2cqw;
+  height: 1.5cqw;
+}
+
+.cl-kotak-pancing {
+  position: absolute;
+  left: 26.5%;
+  top: 66%;
+  width: 6cqw;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 0.5cqw 0.3cqw rgba(0, 0, 0, 0.35));
+}
+.cl-kotak-pancing__penutup {
+  height: 1.2cqw;
+  background: linear-gradient(180deg, #ff6b6b, #c92a2a);
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 0.6cqw 0.6cqw 0.2cqw 0.2cqw;
+}
+.cl-kotak-pancing__badan {
+  display: grid;
+  place-items: center;
+  height: 2.8cqw;
+  margin-top: -0.2cqw;
+  font-size: 1.6cqw;
+  background: linear-gradient(180deg, #4dabf7, #1971c2);
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 0.2cqw 0.2cqw 0.6cqw 0.6cqw;
+}
+
+/* HUD */
+.cl-hud {
+  position: absolute;
+  z-index: 20;
+  top: 1.4cqw;
+  left: 1.4cqw;
+  right: 14cqw;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.4cqw;
+  pointer-events: none;
+}
+.cl-hud > * {
+  pointer-events: auto;
+}
+.cl-skor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3cqw 1.4cqw 0.5cqw;
+  background: linear-gradient(180deg, #fff07a, #ffc300);
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 1.2cqw;
+  box-shadow: 0 0.4cqw 0 var(--cl-gelap);
+}
+.cl-skor span {
+  font-size: 0.95cqw;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.cl-skor b {
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 2cqw;
+  line-height: 1;
+}
+.cl-koleksi {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5cqw 1cqw 0.8cqw;
+  background: rgba(255, 253, 244, 0.95);
+  border: 0.28cqw solid var(--cl-gelap);
+  border-radius: 1.6cqw;
+  box-shadow:
+    0 0.5cqw 0 #d9a441,
+    0 0.5cqw 0 0.28cqw var(--cl-gelap);
+}
+.cl-koleksi__tajuk {
+  text-align: center;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.15cqw;
+  letter-spacing: 0.06em;
+  color: #b34700;
+}
+.cl-koleksi__tajuk b {
+  font-weight: 400;
+  margin-left: 0.4cqw;
+  padding: 0 0.6cqw;
+  color: #fff;
+  background: #ff7b00;
+  border-radius: 99cqw;
+}
+.cl-koleksi__slot {
+  display: flex;
+  gap: 0.6cqw;
+  margin-top: 0.3cqw;
+}
+.cl-slot {
+  display: grid;
+  place-items: center;
+  width: 8.2cqw;
+  height: 4.8cqw;
+  padding: 0.2cqw;
+  background: #dceffa;
+  border: 0.2cqw dashed #5aa9d6;
+  border-radius: 1cqw;
+  cursor: default;
+}
+.cl-slot.is-ada {
+  background: radial-gradient(circle, #fff 30%, #cfeeff);
+  border: 0.22cqw solid var(--cl-gelap);
+  cursor: pointer;
+  animation: cl-pop 0.5s cubic-bezier(0.5, 1.8, 0.5, 1);
+  transition: transform 0.15s;
+}
+.cl-slot.is-ada:hover {
+  transform: scale(1.1) rotate(-3deg);
+}
+.cl-slot svg {
+  width: 100%;
+  height: 100%;
+}
+.cl-slot__kosong {
+  font-family: var(--cl-font-tajuk);
+  font-size: 2cqw;
+  color: #5aa9d6;
+  opacity: 0.7;
+}
+
+.cl-petunjuk {
+  position: absolute;
+  z-index: 15;
+  bottom: 2cqw;
+  left: 50%;
+  translate: -50% 0;
+  max-width: 64cqw;
+  padding: 0.7cqw 2cqw;
+  font-weight: 800;
+  font-size: 1.45cqw;
+  text-align: center;
+  color: #fff;
+  background: rgba(11, 59, 92, 0.85);
+  border: 0.25cqw solid #fff;
+  border-radius: 99cqw;
+  box-shadow: 0 0.5cqw 1.2cqw rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  animation: cl-naik 0.35s ease-out;
+}
+
+.cl-tarik {
+  position: absolute;
+  z-index: 25;
+  bottom: 2cqw;
+  left: 50%;
+  width: 54cqw;
+  translate: -50% 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'tajuk tajuk'
+    'bar butang'
+    'masa butang';
+  gap: 0.6cqw 1.4cqw;
+  padding: 1.1cqw 1.4cqw;
+  background: rgba(255, 253, 244, 0.97);
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 1.8cqw;
+  box-shadow:
+    0 0.6cqw 0 var(--cl-gelap),
+    0 1.4cqw 2cqw rgba(0, 0, 0, 0.35);
+  animation: cl-pop 0.35s cubic-bezier(0.5, 1.8, 0.5, 1);
+}
+.cl-tarik__tajuk {
+  grid-area: tajuk;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.4cqw;
+  color: #e6204a;
+  text-align: center;
+}
+.cl-tarik__bar {
+  grid-area: bar;
+  position: relative;
+  height: 3cqw;
+  background: linear-gradient(90deg, #ff5c7a, #ffb347 50%, #ff5c7a);
+  border: 0.28cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  overflow: hidden;
+}
+.cl-tarik__zon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #8ff57f, #22b33a);
+  border-left: 0.2cqw solid var(--cl-gelap);
+  border-right: 0.2cqw solid var(--cl-gelap);
+}
+.cl-tarik__zon i {
+  position: absolute;
+  left: 33.3%;
+  right: 33.3%;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.45);
+}
+.cl-tarik__jarum {
+  position: absolute;
+  top: -0.2cqw;
+  bottom: -0.2cqw;
+  width: 0.8cqw;
+  margin-left: -0.4cqw;
+  background: #fff;
+  border: 0.2cqw solid var(--cl-gelap);
+  border-radius: 0.4cqw;
+  box-shadow: 0 0 0.6cqw #fff;
+}
+.cl-tarik__masa {
+  grid-area: masa;
+  height: 0.7cqw;
+  background: rgba(27, 27, 47, 0.15);
+  border-radius: 99cqw;
+  overflow: hidden;
+}
+.cl-tarik__masa div {
+  height: 100%;
+  background: #1677ff;
+  border-radius: 99cqw;
+}
+.cl-tarik__butang {
+  grid-area: butang;
+  align-self: center;
+  padding: 0.8cqw 2.2cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2.2cqw;
+  color: #fff;
+  -webkit-text-stroke: 0.22cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  background: linear-gradient(180deg, #ff8a9b, #ff2d55);
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 1.4cqw;
+  box-shadow: 0 0.55cqw 0 #9a0f30;
+  cursor: pointer;
+  animation: cl-nadi-merah 0.6s ease-in-out infinite;
+}
+.cl-tarik__butang:active {
+  transform: translateY(0.4cqw);
+  box-shadow: 0 0.1cqw 0 #9a0f30;
+}
+
+.cl-notis {
+  position: absolute;
+  z-index: 40;
+  top: 22%;
+  left: 50%;
+  padding: 0.9cqw 2.4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2cqw;
+  letter-spacing: 0.03em;
+  color: #fff;
+  -webkit-text-stroke: 0.2cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  white-space: nowrap;
+  border: 0.3cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow: 0 0.5cqw 0 var(--cl-gelap);
+  pointer-events: none;
+  animation: cl-notis 1.9s ease-out forwards;
+}
+.cl-notis--baik {
+  background: linear-gradient(180deg, #7cf06b, #22b33a);
+}
+.cl-notis--buruk {
+  background: linear-gradient(180deg, #ff8a9b, #ff2d55);
+}
+.cl-notis--info {
+  background: linear-gradient(180deg, #5cc8ff, #1677ff);
+}
+.cl-main__tamat {
+  position: absolute;
+  z-index: 30;
+  bottom: 7cqw;
+  left: 50%;
+  translate: -50% 0;
+  animation: cl-nadi 1.4s ease-in-out infinite;
+}
+
+/* ---------------- Overlay & popup ---------------- */
+.cl-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 34, 58, 0.6);
+  backdrop-filter: blur(0.3cqw);
+  animation: cl-pudar 0.3s ease-out;
+}
+.cl-konfeti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cl-konfeti i {
+  position: absolute;
+  top: -3cqw;
+  width: 0.9cqw;
+  height: 1.5cqw;
+  border-radius: 0.2cqw;
+  animation: cl-konfeti linear infinite;
+}
+.cl-tangkap {
+  position: relative;
+  width: 52cqw;
+  padding: 2cqw 2.4cqw 2.2cqw;
+  text-align: center;
+  background: linear-gradient(180deg, #fffdf4, #fff1c9);
+  border: 0.4cqw solid var(--cl-gelap);
+  border-radius: 2.6cqw;
+  box-shadow:
+    0 0.9cqw 0 #d9a441,
+    0 0.9cqw 0 0.4cqw var(--cl-gelap),
+    0 3cqw 4cqw rgba(0, 0, 0, 0.45);
+  animation: cl-pop 0.55s cubic-bezier(0.5, 1.8, 0.5, 1);
+}
+.cl-tangkap__sinar {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 46cqw;
+  height: 46cqw;
+  margin: -23cqw 0 0 -23cqw;
+  background: repeating-conic-gradient(rgba(255, 210, 63, 0.35) 0 10deg, transparent 10deg 20deg);
+  border-radius: 50%;
+  mask-image: radial-gradient(closest-side, #000 40%, transparent);
+  animation: cl-putar 12s linear infinite;
+  pointer-events: none;
+}
+.cl-tangkap__tajuk {
+  position: relative;
+  font-family: var(--cl-font-tajuk);
+  font-size: 4.4cqw;
+  line-height: 1;
+  color: #ffd84d;
+  -webkit-text-stroke: 0.4cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  text-shadow:
+    0 0.25cqw 0 #b34700,
+    0 0.5cqw 0 var(--cl-gelap);
+  animation: cl-huruf 1.6s ease-in-out infinite;
+}
+.cl-tangkap__sub {
+  position: relative;
+  margin: 0.6cqw 0 0;
+  font-weight: 700;
+  font-size: 1.35cqw;
+}
+.cl-tangkap__ikan {
+  position: relative;
+  display: block;
+  width: 30cqw;
+  margin: 0.4cqw auto 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  animation: cl-terapung 2.4s ease-in-out infinite;
+  transition: transform 0.15s;
+}
+.cl-tangkap__ikan:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+.cl-tangkap__ikan svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.8cqw 0.6cqw rgba(0, 0, 0, 0.25));
+}
+.cl-tangkap__tekan {
+  display: inline-block;
+  margin-top: 0.2cqw;
+  padding: 0.2cqw 1.2cqw;
+  font-weight: 800;
+  font-size: 1.15cqw;
+  color: #fff;
+  background: #1677ff;
+  border-radius: 99cqw;
+  animation: cl-lantun 1.2s ease-in-out infinite;
+}
+.cl-tangkap__nama {
+  position: relative;
+  margin-top: 0.8cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 2cqw;
+  color: #1677ff;
+}
+.cl-tangkap__mata {
+  position: relative;
+  margin-top: 0.2cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.6cqw;
+  color: #22b33a;
+}
+.cl-tangkap__mata span {
+  margin-left: 0.6cqw;
+  padding: 0 0.8cqw;
+  color: var(--cl-gelap);
+  background: #ffe066;
+  border-radius: 99cqw;
+}
+.cl-tangkap__butang {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 1.6cqw;
+  margin-top: 1.4cqw;
+}
+.cl-tangkap__butang .cl-btn {
+  min-width: 18cqw;
+  font-size: 1.7cqw;
+}
+
+/* ---------------- Kemenangan ---------------- */
+.cl-menang .cl-halaman {
+  gap: 1.4cqw;
+}
+.cl-menang__bintang {
+  display: flex;
+  gap: 1cqw;
+  font-size: 5.4cqw;
+  line-height: 1;
+}
+.cl-menang__bintang span {
+  color: rgba(255, 255, 255, 0.35);
+  -webkit-text-stroke: 0.3cqw var(--cl-gelap);
+  paint-order: stroke fill;
+  animation: cl-pop 0.6s cubic-bezier(0.5, 1.8, 0.5, 1) both;
+}
+.cl-menang__bintang span.is-on {
+  color: #ffd84d;
+  text-shadow: 0 0.35cqw 0 #b34700;
+}
+.cl-menang__bintang span:nth-child(2) {
+  transform: translateY(-1cqw);
+  font-size: 1.2em;
+}
+.cl-menang__teks {
+  margin: 0;
+  max-width: 70cqw;
+  padding: 0.6cqw 2cqw;
+  font-weight: 700;
+  font-size: 1.4cqw;
+  text-align: center;
+  color: #fff;
+  background: rgba(11, 59, 92, 0.75);
+  border-radius: 99cqw;
+}
+.cl-menang__ikan {
+  display: flex;
+  gap: 1.2cqw;
+}
+.cl-menang__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4cqw;
+  width: 15cqw;
+  padding: 1cqw 0.8cqw;
+  background: rgba(255, 253, 244, 0.95);
+  border: 0.28cqw solid var(--cl-gelap);
+  border-radius: 1.6cqw;
+  box-shadow: 0 0.5cqw 0 var(--cl-gelap);
+  cursor: pointer;
+  animation: cl-pop 0.6s cubic-bezier(0.5, 1.8, 0.5, 1) both;
+  transition: transform 0.15s;
+}
+.cl-menang__item:hover {
+  transform: translateY(-0.6cqw) rotate(-2deg);
+}
+.cl-menang__item svg {
+  width: 100%;
+  height: auto;
+}
+.cl-menang__item span {
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.2cqw;
+  color: #1677ff;
+}
+.cl-menang__petunjuk {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.3cqw;
+  color: #fff;
+  text-shadow: 0 0.15cqw 0.3cqw rgba(0, 0, 0, 0.6);
+}
+.cl-menang__butang {
+  display: flex;
+  gap: 2cqw;
+}
+
+/* ---------------- Bahan / dokumen ---------------- */
+.cl-overlay--bahan {
+  z-index: 65;
+}
+.cl-bahan {
+  --warna: #ff7b00;
+  --gelap: #b34700;
+  display: flex;
+  flex-direction: column;
+  width: 90cqw;
+  height: 88cqh;
+  overflow: hidden;
+  background: #fffdf6;
+  border: 0.4cqw solid var(--cl-gelap);
+  border-radius: 2.4cqw;
+  box-shadow:
+    0 0.8cqw 0 var(--gelap),
+    0 0.8cqw 0 0.4cqw var(--cl-gelap),
+    0 3cqw 4cqw rgba(0, 0, 0, 0.45);
+  animation: cl-pop 0.45s cubic-bezier(0.5, 1.6, 0.5, 1);
+}
+.cl-bahan__kepala {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  padding: 1cqw 1.6cqw;
+  color: #fff;
+  background:
+    radial-gradient(circle at 10% -40%, rgba(255, 255, 255, 0.5), transparent 50%),
+    linear-gradient(180deg, var(--warna), var(--gelap));
+  border-bottom: 0.35cqw solid var(--cl-gelap);
+}
+.cl-bahan__ikan {
+  flex: none;
+  width: 11cqw;
+  animation: cl-terapung 3s ease-in-out infinite;
+}
+.cl-bahan__ikan svg {
+  width: 100%;
+  height: auto;
+}
+.cl-bahan__tajuk {
+  flex: 1;
+  min-width: 0;
+}
+.cl-bahan__tajuk small {
+  display: block;
+  font-weight: 800;
+  font-size: 1cqw;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+.cl-bahan__tajuk h2 {
+  margin: 0;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 2.6cqw;
+  line-height: 1.1;
+  -webkit-text-stroke: 0.22cqw var(--cl-gelap);
+  paint-order: stroke fill;
+}
+.cl-bahan__tutup {
+  flex: none;
+  padding: 0.6cqw 1.6cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.4cqw;
+  color: var(--cl-gelap);
+  background: #fff;
+  border: 0.28cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow: 0 0.4cqw 0 var(--cl-gelap);
+  cursor: pointer;
+}
+.cl-bahan__tutup:hover {
+  background: #ffe066;
+}
+.cl-bahan__tutup:active {
+  transform: translateY(0.3cqw);
+  box-shadow: 0 0.1cqw 0 var(--cl-gelap);
+}
+.cl-bahan__isi {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.6cqw 2.4cqw 2.4cqw;
+  font-size: 1.32cqw;
+  line-height: 1.5;
+  user-select: text;
+  -webkit-user-select: text;
+  scrollbar-color: var(--warna) transparent;
+}
+
+.cl-tab__senarai {
+  display: flex;
+  gap: 0.8cqw;
+  margin-bottom: 1.4cqw;
+}
+.cl-tab__senarai button {
+  padding: 0.5cqw 1.6cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.3cqw;
+  color: var(--cl-gelap);
+  background: #fff;
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  box-shadow: 0 0.3cqw 0 var(--cl-gelap);
+  cursor: pointer;
+}
+.cl-tab__senarai button.is-aktif {
+  color: #fff;
+  background: var(--warna);
+  transform: translateY(0.15cqw);
+  box-shadow: 0 0.15cqw 0 var(--cl-gelap);
+}
+.cl-tab__isi {
+  animation: cl-naik 0.35s ease-out;
+}
+
+.cl-dok h3 {
+  margin: 1.4cqw 0 0.8cqw;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 2cqw;
+  color: var(--gelap);
+}
+.cl-dok h3:first-child {
+  margin-top: 0;
+}
+.cl-dok h4 {
+  margin: 0 0 0.4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 1.5cqw;
+}
+.cl-dok p {
+  margin: 0 0 0.8cqw;
+}
+.cl-dok ul,
+.cl-dok ol {
+  margin: 0.4cqw 0;
+  padding-left: 2cqw;
+}
+.cl-grid-2,
+.cl-grid-3 {
+  display: grid;
+  gap: 1.2cqw;
+  margin: 1cqw 0;
+}
+.cl-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.cl-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.cl-kad {
+  padding: 1.2cqw 1.4cqw;
+  background: #fff;
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 1.4cqw;
+  box-shadow: 0 0.4cqw 0 #ffd27a;
+}
+.cl-kad p:last-child {
+  margin-bottom: 0;
+}
+.cl-kad--merah {
+  background: #fff0f2;
+  box-shadow: 0 0.4cqw 0 #ff8a9b;
+}
+.cl-kad--biru {
+  background: #eef7ff;
+  box-shadow: 0 0.4cqw 0 #74c0fc;
+}
+.cl-kad--hijau {
+  background: #effff0;
+  box-shadow: 0 0.4cqw 0 #8ce99a;
+}
+.cl-kad--tengah {
+  text-align: center;
+}
+.cl-kad__ikon {
+  font-size: 2.8cqw;
+  line-height: 1.2;
+}
+.cl-kecil {
+  font-size: 1.15cqw;
+  opacity: 0.8;
+}
+.cl-info {
+  margin: 1.2cqw 0;
+  padding: 1cqw 1.4cqw;
+  background: #fff8db;
+  border-left: 0.6cqw solid #ffc300;
+  border-radius: 0 1.2cqw 1.2cqw 0;
+}
+.cl-info--hijau {
+  background: #ebfbee;
+  border-color: #22b33a;
+}
+.cl-jadual {
+  width: 100%;
+  margin: 0.8cqw 0 1.2cqw;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 1.2cqw;
+  background: #fff;
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 1.2cqw;
+}
+.cl-jadual th,
+.cl-jadual td {
+  padding: 0.7cqw 1cqw;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 0.1cqw solid rgba(27, 27, 47, 0.12);
+}
+.cl-jadual thead th {
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 1.3cqw;
+  color: #fff;
+  background: var(--warna);
+}
+.cl-jadual tbody tr:nth-child(even) td {
+  background: #fffaf0;
+}
+.cl-jadual tbody tr:last-child td,
+.cl-jadual tbody tr:last-child th {
+  border-bottom: 0;
+}
+.cl-jadual--rph th {
+  width: 18%;
+  color: var(--gelap);
+  background: #fff3d6;
+}
+.cl-senarai-ikon {
+  list-style: none;
+  padding: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8cqw;
+}
+.cl-senarai-ikon li {
+  padding: 0.7cqw 1cqw;
+  background: #fff;
+  border: 0.2cqw solid rgba(27, 27, 47, 0.2);
+  border-radius: 1cqw;
+}
+.cl-langkah-dok {
+  counter-reset: langkah;
+  list-style: none;
+  padding: 0 !important;
+  display: grid;
+  gap: 0.7cqw;
+}
+.cl-langkah-dok li {
+  counter-increment: langkah;
+  position: relative;
+  padding: 0.7cqw 1cqw 0.7cqw 4cqw;
+  background: #fff;
+  border: 0.2cqw solid rgba(27, 27, 47, 0.2);
+  border-radius: 1cqw;
+}
+.cl-langkah-dok li::before {
+  content: counter(langkah);
+  position: absolute;
+  left: 0.8cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 2.3cqw;
+  height: 2.3cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.3cqw;
+  color: #fff;
+  background: var(--warna);
+  border: 0.18cqw solid var(--cl-gelap);
+  border-radius: 50%;
+}
+.cl-senarai-ikan {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1cqw;
+}
+.cl-senarai-ikan__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4cqw;
+  padding: 0.8cqw;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.05cqw;
+  background: #eef7ff;
+  border-radius: 1.2cqw;
+}
+.cl-senarai-ikan__item svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Kuiz */
+.cl-kuiz {
+  max-width: 70cqw;
+  margin: 0 auto;
+}
+.cl-kuiz__atas {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.4cqw;
+}
+.cl-kuiz__no {
+  padding: 0.2cqw 1.2cqw;
+  color: #fff;
+  background: var(--warna);
+  border: 0.2cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+}
+.cl-kuiz__kemajuan {
+  flex: 1;
+  height: 1.4cqw;
+  background: #ffe0e6;
+  border: 0.2cqw solid var(--cl-gelap);
+  border-radius: 99cqw;
+  overflow: hidden;
+}
+.cl-kuiz__kemajuan div {
+  height: 100%;
+  background: linear-gradient(90deg, #ffc21a, #ff7b00);
+  transition: width 0.4s;
+}
+.cl-kuiz__skor {
+  color: #22b33a;
+}
+.cl-kuiz__soalan {
+  margin: 1.6cqw 0 1.2cqw;
+  font-family: var(--cl-font-tajuk);
+  font-weight: 400;
+  font-size: 2.2cqw;
+  line-height: 1.2;
+  text-align: center;
+  animation: cl-naik 0.35s ease-out;
+}
+.cl-kuiz__pilihan {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1cqw;
+}
+.cl-kuiz__jawapan {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 1cqw 1.2cqw;
+  font-family: var(--cl-font);
+  font-weight: 700;
+  font-size: 1.35cqw;
+  line-height: 1.25;
+  text-align: left;
+  color: var(--cl-gelap);
+  background: #fff;
+  border: 0.25cqw solid var(--cl-gelap);
+  border-radius: 1.4cqw;
+  box-shadow: 0 0.45cqw 0 var(--cl-gelap);
+  cursor: pointer;
+  transition:
+    transform 0.12s,
+    background 0.2s;
+}
+.cl-kuiz__jawapan:not(:disabled):hover {
+  transform: translateY(-0.25cqw);
+  background: #fff8db;
+}
+.cl-kuiz__jawapan:disabled {
+  cursor: default;
+}
+.cl-kuiz__huruf {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.6cqw;
+  height: 2.6cqw;
+  font-family: var(--cl-font-tajuk);
+  font-size: 1.4cqw;
+  color: #fff;
+  background: var(--warna);
+  border: 0.2cqw solid var(--cl-gelap);
+  border-radius: 50%;
+}
+.cl-kuiz__jawapan.is-betul {
+  background: #b9f6b0;
+  animation: cl-pop 0.4s;
+}
+.cl-kuiz__jawapan.is-betul .cl-kuiz__huruf {
+  background: #22b33a;
+}
+.cl-kuiz__jawapan.is-salah {
+  background: #ffc9d2;
+  animation: cl-gegar 0.4s;
+}
+.cl-kuiz__jawapan.is-salah .cl-kuiz__huruf {
+  background: #9a0f30;
+}
+.cl-kuiz__jawapan.is-pudar {
+  opacity: 0.5;
+}
+.cl-kuiz__maklum {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  margin-top: 1.4cqw;
+  padding: 1cqw 1.4cqw;
+  border: 0.22cqw solid var(--cl-gelap);
+  border-radius: 1.4cqw;
+  animation: cl-naik 0.3s ease-out;
+}
+.cl-kuiz__maklum > div {
+  flex: 1;
+}
+.cl-kuiz__maklum.is-betul {
+  background: #ebfbee;
+}
+.cl-kuiz__maklum.is-salah {
+  background: #fff0f2;
+}
+.cl-kuiz--tamat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1cqw;
+  padding-top: 2cqw;
+  text-align: center;
+}
+.cl-kuiz__skor-akhir {
+  font-family: var(--cl-font-tajuk);
+  font-size: 6cqw;
+  line-height: 1;
+  color: var(--warna);
+  -webkit-text-stroke: 0.35cqw var(--cl-gelap);
+  paint-order: stroke fill;
+}
+.cl-kuiz__ulasan {
+  font-weight: 800;
+  font-size: 1.7cqw;
+}
+
+/* ---------------- Animasi ---------------- */
+@keyframes cl-masuk {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+@keyframes cl-zoom {
+  to {
+    transform: scale(1.06) translateX(-1%);
+  }
+}
+@keyframes cl-ombak {
+  to {
+    transform: translateX(7cqw);
+  }
+}
+@keyframes cl-kelip {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+}
+@keyframes cl-gelembung {
+  from {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50cqh) translateX(1.5cqw);
+  }
+  to {
+    transform: translateY(-105cqh) translateX(-1cqw);
+    opacity: 0;
+  }
+}
+@keyframes cl-huruf {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-0.08em) rotate(2deg);
+  }
+}
+@keyframes cl-denyut {
+  0%,
+  100% {
+    transform: rotate(-1.5deg) scale(1);
+  }
+  50% {
+    transform: rotate(1deg) scale(1.04);
+  }
+}
+@keyframes cl-terapung {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.8cqw);
+  }
+}
+@keyframes cl-goyang {
+  0%,
+  100% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+@keyframes cl-nadi {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+@keyframes cl-nadi-merah {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes cl-naik {
+  from {
+    opacity: 0;
+    transform: translateY(1.5cqw);
+  }
+}
+@keyframes cl-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes cl-pudar {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cl-lompat {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(-40deg);
+  }
+  5% {
+    opacity: 1;
+  }
+  20% {
+    transform: translate(calc(var(--arah, 1) * 4cqw), -14cqw) rotate(0deg);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(calc(var(--arah, 1) * 8cqw), 0) rotate(40deg);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--arah, 1) * 8cqw), 2cqw) rotate(50deg);
+  }
+}
+@keyframes cl-aura {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+@keyframes cl-lantun {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -0.5cqw;
+  }
+}
+@keyframes cl-ekor {
+  from {
+    transform: rotate(-12deg);
+  }
+  to {
+    transform: rotate(12deg);
+  }
+}
+@keyframes cl-riak {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+}
+@keyframes cl-seru {
+  from {
+    transform: scale(0.9) rotate(-8deg);
+  }
+  to {
+    transform: scale(1.15) rotate(8deg);
+  }
+}
+@keyframes cl-gelang {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.8);
+  }
+}
+@keyframes cl-titis {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(calc(var(--tx) * 0.7), -3.5cqw) scale(1);
+  }
+  100% {
+    transform: translate(var(--tx), 0.5cqw) scale(0.5);
+    opacity: 0;
+  }
+}
+@keyframes cl-notis {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 1cqw) scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.08);
+  }
+  20% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -2cqw);
+  }
+}
+@keyframes cl-konfeti {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 3cqw 110cqh;
+    rotate: 720deg;
+  }
+}
+@keyframes cl-putar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes cl-gegar {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-0.6cqw);
+  }
+  75% {
+    transform: translateX(0.6cqw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-stage *,
+  .cl-stage *::before,
+  .cl-stage *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
