@@ -36,6 +36,20 @@ export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void })
         <div className="cl-bahan__isi">
           {id === 'nota' && (
   <div className="cl-dok">
+    <h2>🐟 NOTA</h2>
+
+    <p>Nota Pendidikan Kesihatan Tingkatan 1</p>
+
+    <a
+      href="https://horse-70hj71.my.canva.site/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Buka Nota di Canva
+    </a>
+  </div>
+)}
+  <div className="cl-dok">
     <a
       href="https://horse-70hj71.my.canva.site/"
       target="_blank"
