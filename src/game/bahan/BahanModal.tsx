@@ -68,3 +68,5 @@ export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void })
     </div>
   )
 }
+
+
