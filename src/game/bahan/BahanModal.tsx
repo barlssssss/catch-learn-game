@@ -1,7 +1,7 @@
 import { useEffect, type CSSProperties } from 'react'
 import { ikanById, type KomponenId } from '../content'
 import { FishSvg } from '../FishSvg'
-import { Nota } from './Nota'
+
 import { Rph } from './Rph'
 import { ManualPengguna } from './ManualPengguna'
 import { ManualPermainan } from './ManualPermainan'
@@ -34,7 +34,17 @@ export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void })
           </button>
         </header>
         <div className="cl-bahan__isi">
-          {id === 'nota' && <Nota />}
+          {id === 'nota' && (
+  <div className="cl-dok">
+    <a
+      href="https://horse-70hj71.my.canva.site/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Buka Nota Pendidikan Kesihatan
+    </a>
+  </div>
+)}
           {id === 'rph' && <Rph />}
           {id === 'pengguna' && <ManualPengguna />}
           {id === 'permainan' && <ManualPermainan />}
