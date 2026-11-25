@@ -1,11 +1,8 @@
+
 import { useEffect, type CSSProperties } from 'react'
 import { ikanById, type KomponenId } from '../content'
 import { FishSvg } from '../FishSvg'
-
-import { Rph } from './Rph'
 import { ManualPengguna } from './ManualPengguna'
-import { ManualPermainan } from './ManualPermainan'
-import { Kuiz } from './Kuiz'
 
 export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void }) {
   const ikan = ikanById(id)
@@ -15,6 +12,13 @@ export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void })
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [tutup])
+
+  const pautan: Partial<Record<KomponenId, string>> = {
+    rph: 'https://drive.google.com/drive/folders/1d7g-O3OW0X7-BOGMMoq3jtH29GLzCwnX',
+    nota: 'https://horse-70hj71.my.canva.site/',
+    permainan: 'https://drive.google.com/drive/folders/14JoyFWKNPG29OfQIjaUcTVsOojyzhOpC',
+    kuiz: 'https://drive.google.com/drive/folders/1UHPZVLzCPCGqFzg9bgGeZANvZq7Wb-ki',
+  }
 
   return (
     <div className="cl-overlay cl-overlay--bahan" role="dialog" aria-modal="true" aria-label={ikan.nama}>
@@ -34,39 +38,20 @@ export function BahanModal({ id, tutup }: { id: KomponenId; tutup: () => void })
           </button>
         </header>
         <div className="cl-bahan__isi">
-          {id === 'nota' && (
-  <div className="cl-dok">
-    <h2>🐟 NOTA</h2>
-
-    <p>Nota Pendidikan Kesihatan Tingkatan 1</p>
-
-    <a
-      href="https://horse-70hj71.my.canva.site/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Buka Nota di Canva
-    </a>
-  </div>
-)}
-  <div className="cl-dok">
-    <a
-      href="https://horse-70hj71.my.canva.site/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Buka Nota Pendidikan Kesihatan
-    </a>
-  </div>
-)}
-          {id === 'rph' && <Rph />}
-          {id === 'pengguna' && <ManualPengguna />}
-          {id === 'permainan' && <ManualPermainan />}
-          {id === 'kuiz' && <Kuiz />}
+          {id === 'pengguna' ? (
+            <ManualPengguna />
+          ) : pautan[id] ? (
+            <div className="cl-dok">
+              <h2>{ikan.ikon} {ikan.nama}</h2>
+              <p>Tekan butang di bawah untuk membuka bahan pembelajaran.</p>
+              <a href={pautan[id]} target="_blank" rel="noopener noreferrer">
+                BUKA {ikan.nama.toUpperCase()}
+              </a>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
   )
 }
-
 
